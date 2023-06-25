@@ -6,7 +6,10 @@ import axios from "axios";
 function App() {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
+  const [searchValue, setSearchValue] = useState([]);
   const [sortValue, setSortValue] = useState("");
+
+  console.log(searchValue);
 
   const sortOptions = ["id", "userId", "title", "completed"];
   const dataUrl = "https://jsonplaceholder.typicode.com/todos";
@@ -25,14 +28,15 @@ function App() {
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    return setData(
-      data.filter((d) => (query ? d.title.toLowerCase().includes(query) : data))
+    return setSearchValue(
+      data.filter((d) => query && d.title.toLowerCase().includes(query))
     );
   };
 
   const handleReset = () => {
     loadUserData();
     setQuery("");
+    setSearchValue([]);
   };
 
   return (
@@ -55,6 +59,19 @@ function App() {
         </form>
       </div>
 
+      <div className="mb-4">
+        <select className="form-select" aria-label="Default select example">
+          <option selected>Open this select menu</option>
+          {sortOptions.map((o) => (
+            <>
+              <option value={o} className="text-capitalize cursor-pointer">
+                {o}
+              </option>
+            </>
+          ))}
+        </select>
+      </div>
+
       <table className="table table-striped">
         <thead>
           <tr className="text-uppercase">
@@ -66,18 +83,31 @@ function App() {
           </tr>
         </thead>
         <tbody className="text-capitalize">
-          {data.map((d) => (
-            <tr key={d.id}>
-              <td>{d.id}</td>
-              <td>{d.userId}</td>
-              <td>{d.title}</td>
-              <td>{d.completed.toString()}</td>
-              <td>
-                <button className="btn btn-success me-2">Edit</button>
-                <button className="btn btn-danger">Delete</button>
-              </td>
-            </tr>
-          ))}
+          {searchValue.length() > 0
+            ? searchValue.map((d) => (
+                <tr key={d.id}>
+                  <td>{d.id}</td>
+                  <td>{d.userId}</td>
+                  <td>{d.title}</td>
+                  <td>{d.completed.toString()}</td>
+                  <td>
+                    <button className="btn btn-success me-2">Edit</button>
+                    <button className="btn btn-danger">Delete</button>
+                  </td>
+                </tr>
+              ))
+            : data.map((d) => (
+                <tr key={d.id}>
+                  <td>{d.id}</td>
+                  <td>{d.userId}</td>
+                  <td>{d.title}</td>
+                  <td>{d.completed.toString()}</td>
+                  <td>
+                    <button className="btn btn-success me-2">Edit</button>
+                    <button className="btn btn-danger">Delete</button>
+                  </td>
+                </tr>
+              ))}
         </tbody>
       </table>
     </main>
