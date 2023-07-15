@@ -88,6 +88,42 @@ function Todo() {
     setModalIsOpen(false);
   };
 
+  const handleCreate = (newTodo) => {
+    axios
+      .post(dataUrl, newTodo)
+      .then((res) => {
+        const createdTodo = res.data;
+        setData((prevData) => [...prevData, createdTodo]);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleUpdate = (id, updatedTodo) => {
+    axios
+      .put(`${dataUrl}/${id}`, updatedTodo)
+      .then((res) => {
+        const updatedTodo = res.data;
+        setData((prevData) => {
+          const newData = [...prevData];
+          const index = newData.findIndex((item) => item.id === id);
+          if (index !== -1) {
+            newData[index] = updatedTodo;
+          }
+          return newData;
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDelete = (id) => {
+    axios
+      .delete(`${dataUrl}/${id}`)
+      .then(() => {
+        setData((prevData) => prevData.filter((item) => item.id !== id));
+      })
+      .catch((err) => console.log(err));
+  };
+
   const itemsPerPage = 10;
   const offset = currentPage * itemsPerPage;
   const paginatedData = searchValue.length > 0 ? searchValue : data;
@@ -177,8 +213,23 @@ function Todo() {
                         <td>{d.title}</td>
                         <td>{d.completed.toString()}</td>
                         <td>
-                          <button className="btn btn-info me-2">Edit</button>
-                          <button className="btn btn-danger">Delete</button>
+                          <button
+                            className="btn btn-info me-2"
+                            onClick={() =>
+                              handleUpdate(d.id, {
+                                ...d,
+                                title: "Updated Title",
+                              })
+                            }
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => handleDelete(d.id)}
+                          >
+                            Delete
+                          </button>
                           <button
                             className="btn btn-success ms-2"
                             onClick={() => openModal(d)}
@@ -231,6 +282,27 @@ function Todo() {
           Close
         </button>
       </Modal>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const title = e.target.elements.title.value;
+          const userId = Number(e.target.elements.userId.value);
+          const completed = e.target.elements.completed.checked;
+          const newTodo = {
+            title,
+            userId,
+            completed,
+          };
+          handleCreate(newTodo);
+          e.target.reset();
+        }}
+      >
+        <input type="text" placeholder="Title" name="title" />
+        <input type="number" placeholder="User ID" name="userId" />
+        <input type="checkbox" placeholder="Completed" name="completed" />
+        <button type="submit">Create</button>
+      </form>
     </main>
   );
 }
