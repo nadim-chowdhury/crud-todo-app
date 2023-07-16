@@ -5,6 +5,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -48,6 +50,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -75,6 +79,22 @@ export default function Navbar() {
           </Search>
         </Toolbar>
       </AppBar>
+
+      <Button
+        variant="contained"
+        style={{ marginTop: "24px", marginRight: "16px" }}
+        onClick={() => navigate("/")}
+      >
+        Home
+      </Button>
+
+      <Button
+        variant="contained"
+        style={{ marginTop: "24px" }}
+        onClick={() => navigate("/create")}
+      >
+        Create
+      </Button>
     </Box>
   );
 }
