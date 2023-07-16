@@ -237,6 +237,7 @@ function Todo() {
                             View
                           </button>
                         </td>
+                        {provided.placeholder}
                       </tr>
                     )}
                   </Draggable>

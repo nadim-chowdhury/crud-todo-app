@@ -1,9 +1,15 @@
-import Todo from "./Todo";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Todo2 from "./Todo2";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
-    <>
-      <Todo />
-    </>
+    <Router>
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<Todo2 />} />
+      </Routes>
+    </Router>
   );
 }
